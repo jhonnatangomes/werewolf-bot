@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { Request, Response } from 'express';
 import { verifyKey } from 'discord-interactions';
-import fetch from 'node-fetch';
+import axios from 'axios';
 
 export function readEnvFile() {
   if (process.env.NODE_ENV === 'production') return;
@@ -31,7 +31,7 @@ export function verifyDiscordRequest(clientKey: string) {
 
 export async function discordRequest(endpoint: string, options: Record<string, string>) {
   const url = 'https://discord.com/api/v10/' + endpoint;
-  const res = await fetch(url, {
+  const res = await axios.get(url, {
     headers: {
       Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
       'Content-Type': 'application/json; charset=UTF-8',
@@ -39,10 +39,9 @@ export async function discordRequest(endpoint: string, options: Record<string, s
     },
     ...options,
   });
-  if (!res.ok) {
-    const data = await res.json();
+  if (res.status !== 200) {
     console.log(res.status);
-    throw new Error(JSON.stringify(data));
+    throw new Error(JSON.stringify(res.data));
   }
-  return res;
+  return res.data;
 }
