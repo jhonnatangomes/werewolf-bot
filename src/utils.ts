@@ -1,8 +1,10 @@
 import fs from 'fs';
 import { Request, Response } from 'express';
 import { verifyKey } from 'discord-interactions';
+import fetch from 'node-fetch';
 
 export function readEnvFile() {
+  if (process.env.NODE_ENV === 'production') return;
   const envVariables = Object.fromEntries(
     fs
       .readFileSync('.env')
@@ -27,7 +29,7 @@ export function verifyDiscordRequest(clientKey: string) {
   };
 }
 
-export async function discordRequest(endpoint: string, options: RequestInit) {
+export async function discordRequest(endpoint: string, options: Record<string, string>) {
   const url = 'https://discord.com/api/v10/' + endpoint;
   const res = await fetch(url, {
     headers: {
