@@ -1,7 +1,7 @@
-const fs = require('fs');
+import fs from "fs"
 
 const s = fs
-  .readFileSync('../.env')
+  .readFileSync('.env')
   .toString()
   .split('\n')
   .map((line) => line.split('='));
