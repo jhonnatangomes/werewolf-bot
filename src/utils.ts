@@ -16,7 +16,7 @@ export function readEnvFile() {
 }
 
 export function verifyDiscordRequest(clientKey: string) {
-  return function (req: Request, res: Response, buf: Buffer, _encoding: string) {
+  return function (req: Request, res: Response, buf: Buffer) {
     const signature = req.get('X-Signature-Ed25519');
     const timestamp = req.get('X-Signature-Timestamp');
     if (!signature || !timestamp) return;
@@ -40,6 +40,7 @@ export async function discordRequest(endpoint: string, options: Record<string, u
     ...options,
   });
   if (res.status !== 200) {
+    // eslint-disable-next-line no-console
     console.log(res.status);
     throw new Error(JSON.stringify(res.data));
   }

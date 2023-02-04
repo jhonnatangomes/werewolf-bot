@@ -6,35 +6,25 @@ export async function hasGuildCommands(appId: string, guildId: string, commands:
   commands.forEach(c => hasGuildCommand(appId, guildId, c));
 }
 
-// Checks for a command
+/* eslint-disable no-console */
 async function hasGuildCommand(appId: string, guildId: string, command: Command) {
-  // API endpoint to get and post guild commands
   const endpoint = `applications/${appId}/guilds/${guildId}/commands`;
-
-  try {
-    const data = (await discordRequest(endpoint, { method: 'GET' })) as Command[];
-
-    if (data) {
-      const installedNames = data.map(c => c['name']);
-      if (!installedNames.includes(command['name'])) {
-        console.log(`Installing "${command['name']}"`);
-        installGuildCommand(appId, guildId, command);
-      } else {
-        console.log(`"${command['name']}" command already installed`);
-      }
+  const data = (await discordRequest(endpoint, { method: 'GET' })) as Command[];
+  if (data) {
+    const installedNames = data.map(c => c['name']);
+    if (!installedNames.includes(command['name'])) {
+      console.log(`Installing "${command['name']}"`);
+      installGuildCommand(appId, guildId, command);
+    } else {
+      console.log(`"${command['name']}" command already installed`);
     }
-  } catch (err) {
-    console.error(err);
   }
 }
+/* eslint-enable no-console */
 
 export async function installGuildCommand(appId: string, guildId: string, command: Command) {
   const endpoint = `applications/${appId}/guilds/${guildId}/commands`;
-  try {
-    await discordRequest(endpoint, { method: 'POST', data: JSON.stringify(command) });
-  } catch (err) {
-    console.error(err);
-  }
+  await discordRequest(endpoint, { method: 'POST', data: JSON.stringify(command) });
 }
 
 enum ApplicationCommandType {
@@ -69,7 +59,6 @@ type Command = {
   type: ApplicationCommandType;
   options?: ApplicationCommandOption[];
 };
-// Simple test command
 export const TEST_COMMAND = {
   name: 'my-bot-test',
   description: 'Basic guild command',

@@ -39,6 +39,7 @@ app.get('/commands', async (_req, res) => {
   res.send(commands);
 });
 app.listen(PORT, () => {
+  // eslint-disable-next-line no-console
   console.log('Listening on port', PORT);
   hasGuildCommands(process.env.APP_ID || '', process.env.GUILD_ID || '', [TEST_COMMAND]);
 });
