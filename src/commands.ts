@@ -1,4 +1,4 @@
-import { discordRequest } from './utils.js';
+import { discordRequest } from './utils';
 
 export async function hasGuildCommands(appId: string, guildId: string, commands: Command[]) {
   if (guildId === '' || appId === '') return;
@@ -28,13 +28,10 @@ async function hasGuildCommand(appId: string, guildId: string, command: Command)
   }
 }
 
-// Installs a command
 export async function installGuildCommand(appId: string, guildId: string, command: Command) {
-  // API endpoint to get and post guild commands
   const endpoint = `applications/${appId}/guilds/${guildId}/commands`;
-  // install command
   try {
-    await discordRequest(endpoint, { method: 'POST', body: JSON.stringify(command) });
+    await discordRequest(endpoint, { method: 'POST', data: JSON.stringify(command) });
   } catch (err) {
     console.error(err);
   }

@@ -29,13 +29,13 @@ export function verifyDiscordRequest(clientKey: string) {
   };
 }
 
-export async function discordRequest(endpoint: string, options: Record<string, string>) {
+export async function discordRequest(endpoint: string, options: Record<string, unknown>) {
   const url = 'https://discord.com/api/v10/' + endpoint;
-  const res = await axios.get(url, {
+  const res = await axios.request({
+    url,
     headers: {
       Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
       'Content-Type': 'application/json; charset=UTF-8',
-      'User-Agent': 'DiscordBot (https://github.com/discord/discord-example-app, 1.0.0)',
     },
     ...options,
   });
