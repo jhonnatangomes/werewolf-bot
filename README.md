@@ -16,6 +16,10 @@ Head to the Bot section and create a new one. Hit the reset token button to gene
 
 Whenever you're developing, you're going to need to create a public server address via ngrok (npm run dev:server). You then need to copy the url that redirects traffic to your localhost instance, go to the "General Information" tab and paste it under the "Interactions Endpoint Url". Note that you should add the endpoint "/interactions" in the end, so that if your url is abc.com, you will type "abc.com/interactions". Now you're ready to go.
 
+### Development
+
+When developing, you can start the `dev` script with a parameter. If you run it with `npm run dev name`, every discord command created during your local development session will have the string `-name` appended to its name. This makes it easier if two developers are testing the same command at the same time.
+
 ### Debugging
 
 When registering slash commands in your bot, you can make a request to the internal endpoint "/commands" to see your registered commands via

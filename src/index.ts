@@ -1,9 +1,10 @@
-import { discordRequest, readEnvFile, verifyDiscordRequest } from './utils';
+import { discordRequest, readEnvFile, setCurrentDeveloper, verifyDiscordRequest } from './utils';
 import express, { Request } from 'express';
-import { hasGuildCommands, TEST_COMMAND } from './commands';
+import { command, hasGuildCommands, TEST_COMMAND } from './commands';
 import { InteractionResponseType, InteractionType } from 'discord-interactions';
 
 readEnvFile();
+setCurrentDeveloper();
 const app = express();
 
 const PORT = process.env.PORT || 3000;
@@ -21,7 +22,7 @@ app.post('/interactions', async (req: Request<unknown, unknown, InteractionsBody
   }
   if (type === InteractionType.APPLICATION_COMMAND) {
     const { name } = data;
-    if (name === TEST_COMMAND.name) {
+    if (name === command(TEST_COMMAND).name) {
       return res.send({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
@@ -41,5 +42,5 @@ app.get('/commands', async (_req, res) => {
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
   console.log('Listening on port', PORT);
-  hasGuildCommands(process.env.APP_ID || '', process.env.GUILD_ID || '', [TEST_COMMAND]);
+  hasGuildCommands(process.env.APP_ID || '', process.env.GUILD_ID || '', [TEST_COMMAND].map(command));
 });

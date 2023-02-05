@@ -3,8 +3,8 @@ import { Request, Response } from 'express';
 import { verifyKey } from 'discord-interactions';
 import axios from 'axios';
 
-export function readEnvFile() {
-  if (process.env.NODE_ENV === 'production') return;
+export function readEnvFile(): void {
+  if (isProduction()) return;
   const envVariables = Object.fromEntries(
     fs
       .readFileSync('.env')
@@ -15,8 +15,10 @@ export function readEnvFile() {
   Object.entries(envVariables).forEach(([k, v]) => (process.env[k] = v));
 }
 
-export function verifyDiscordRequest(clientKey: string) {
-  return function (req: Request, res: Response, buf: Buffer) {
+export function verifyDiscordRequest(
+  clientKey: string
+): (_req: Request, _res: Response, _buf: Buffer) => void {
+  return function (req, res, buf) {
     const signature = req.get('X-Signature-Ed25519');
     const timestamp = req.get('X-Signature-Timestamp');
     if (!signature || !timestamp) return;
@@ -29,7 +31,7 @@ export function verifyDiscordRequest(clientKey: string) {
   };
 }
 
-export async function discordRequest(endpoint: string, options: Record<string, unknown>) {
+export async function discordRequest<T>(endpoint: string, options: Record<string, unknown>): Promise<T> {
   const url = 'https://discord.com/api/v10/' + endpoint;
   const res = await axios.request({
     url,
@@ -39,10 +41,18 @@ export async function discordRequest(endpoint: string, options: Record<string, u
     },
     ...options,
   });
-  if (res.status !== 200) {
+  if (![200, 201].includes(res.status)) {
     // eslint-disable-next-line no-console
     console.log(res.status);
     throw new Error(JSON.stringify(res.data));
   }
   return res.data;
+}
+
+export let currentDeveloper = '';
+export function setCurrentDeveloper(): void {
+  currentDeveloper = process.argv.slice(2)[0] || '';
+}
+export function isProduction(): boolean {
+  return process.env.NODE_ENV === 'production';
 }

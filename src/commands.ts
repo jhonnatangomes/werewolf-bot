@@ -1,15 +1,14 @@
-import { discordRequest } from './utils';
+import { currentDeveloper, discordRequest, isProduction } from './utils';
 
-export async function hasGuildCommands(appId: string, guildId: string, commands: Command[]) {
+export async function hasGuildCommands(appId: string, guildId: string, commands: Command[]): Promise<void> {
   if (guildId === '' || appId === '') return;
-
   commands.forEach(c => hasGuildCommand(appId, guildId, c));
 }
 
 /* eslint-disable no-console */
-async function hasGuildCommand(appId: string, guildId: string, command: Command) {
+async function hasGuildCommand(appId: string, guildId: string, command: Command): Promise<void> {
   const endpoint = `applications/${appId}/guilds/${guildId}/commands`;
-  const data = (await discordRequest(endpoint, { method: 'GET' })) as Command[];
+  const data = await discordRequest<Command[]>(endpoint, { method: 'GET' });
   if (data) {
     const installedNames = data.map(c => c['name']);
     if (!installedNames.includes(command['name'])) {
@@ -22,7 +21,7 @@ async function hasGuildCommand(appId: string, guildId: string, command: Command)
 }
 /* eslint-enable no-console */
 
-export async function installGuildCommand(appId: string, guildId: string, command: Command) {
+export async function installGuildCommand(appId: string, guildId: string, command: Command): Promise<void> {
   const endpoint = `applications/${appId}/guilds/${guildId}/commands`;
   await discordRequest(endpoint, { method: 'POST', data: JSON.stringify(command) });
 }
@@ -64,3 +63,10 @@ export const TEST_COMMAND = {
   description: 'Basic guild command',
   type: ApplicationCommandType.ChatInput,
 };
+export function command(command: Command): Command {
+  if (isProduction()) return command;
+  return {
+    ...command,
+    name: currentDeveloper ? `${command.name}-${currentDeveloper}` : command.name,
+  };
+}
