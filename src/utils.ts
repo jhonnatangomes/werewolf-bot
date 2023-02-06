@@ -1,7 +1,7 @@
-import fs from 'fs';
-import { Request, Response } from 'express';
-import { verifyKey } from 'discord-interactions';
 import axios from 'axios';
+import { verifyKey } from 'discord-interactions';
+import { Request, Response } from 'express';
+import fs from 'fs';
 
 export function readEnvFile(): void {
   if (isProduction()) return;
@@ -15,9 +15,7 @@ export function readEnvFile(): void {
   Object.entries(envVariables).forEach(([k, v]) => (process.env[k] = v));
 }
 
-export function verifyDiscordRequest(
-  clientKey: string
-): (_req: Request, _res: Response, _buf: Buffer) => void {
+export function verifyDiscordRequest(clientKey: string): (req: Request, res: Response, buf: Buffer) => void {
   return function (req, res, buf) {
     const signature = req.get('X-Signature-Ed25519');
     const timestamp = req.get('X-Signature-Timestamp');
@@ -31,7 +29,7 @@ export function verifyDiscordRequest(
   };
 }
 
-export async function discordRequest<T>(endpoint: string, options: Record<string, unknown>): Promise<T> {
+export async function discordRequest<T>(endpoint: string, options?: Record<string, unknown>): Promise<T> {
   const url = 'https://discord.com/api/v10/' + endpoint;
   const res = await axios.request({
     url,
@@ -41,11 +39,6 @@ export async function discordRequest<T>(endpoint: string, options: Record<string
     },
     ...options,
   });
-  if (![200, 201].includes(res.status)) {
-    // eslint-disable-next-line no-console
-    console.log(res.status);
-    throw new Error(JSON.stringify(res.data));
-  }
   return res.data;
 }
 
