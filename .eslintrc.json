@@ -15,8 +15,14 @@
     "indent": ["warn", 2],
     "linebreak-style": ["error", "unix"],
     "quotes": ["warn", "single"],
-    "semi": ["warn", "always"],
     "no-console": ["warn"],
-    "no-unused-vars": ["warn", { "varsIgnorePattern": "^_", "argsIgnorePattern": "^_" }]
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        "args": "all",
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ]
   }
 }
