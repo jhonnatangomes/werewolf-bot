@@ -1,5 +1,5 @@
 import { ButtonStyleTypes, MessageComponentTypes } from 'discord-interactions';
-import { discordRequest } from './utils';
+import { discordRequest } from './common';
 
 type Role = 'werewolf' | 'healer' | 'detective' | 'villager';
 

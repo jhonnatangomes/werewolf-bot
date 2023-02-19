@@ -1,7 +1,8 @@
 import express from 'express';
+import { readEnvFile, setCurrentDeveloper } from '../utils';
 import { command, hasGuildCommands, START_COMMAND, TEST_COMMAND } from './commands';
+import { discordRequest, verifyDiscordRequest } from './common';
 import { interactions } from './interactions';
-import { discordRequest, readEnvFile, setCurrentDeveloper, verifyDiscordRequest } from './utils';
 
 readEnvFile();
 setCurrentDeveloper();

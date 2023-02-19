@@ -1,4 +1,5 @@
-import { currentDeveloper, discordRequest, isProduction } from './utils';
+import { currentDeveloper, isProduction } from '../utils';
+import { discordRequest } from './common';
 
 export async function hasGuildCommands(appId: string, guildId: string, commands: Command[]): Promise<void> {
   if (guildId === '' || appId === '') return;

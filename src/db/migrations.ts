@@ -1,4 +1,4 @@
-import { readEnvFile } from './utils';
+import { readEnvFile } from '../utils';
 readEnvFile();
 
 import { execSync } from 'child_process';
@@ -6,19 +6,20 @@ import { Command } from 'commander';
 import { readdirSync, writeFileSync } from 'fs';
 import path from 'path';
 import { PoolClient } from 'pg';
-import { pool } from './db';
+import { pool } from '.';
 
 let client: PoolClient;
 
 async function runMigration() {
   const fileNames = readdirSync('./migrationFiles');
   const lastMigration = await getLastRunMigration();
-  const lastMigrationIndex = fileNames.findIndex(file => file === lastMigration);
+  const lastMigrationIndex = fileNames.findIndex(file => file.replace('.sql', '') === lastMigration);
   const runMigrations = fileNames.slice(lastMigrationIndex === -1 ? 0 : lastMigrationIndex + 1).map(file => {
     execSync(`psql ${process.env.DATABASE_URL} -f ${path.join('./migrationFiles', file)}`);
     return file.replace('.sql', '');
   });
   await markRunMigrations(runMigrations);
+  import('./generateSchema');
 }
 
 async function getLastRunMigration(): Promise<string> {

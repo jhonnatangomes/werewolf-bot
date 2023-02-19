@@ -8,3 +8,5 @@ declare namespace NodeJS {
     DATABASE_URL: string;
   }
 }
+
+type Maybe<T> = T | null | undefined;
