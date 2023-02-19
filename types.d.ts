@@ -5,5 +5,6 @@ declare namespace NodeJS {
     DISCORD_TOKEN: string | undefined;
     PUBLIC_KEY: string | undefined;
     NODE_ENV: string;
+    DATABASE_URL: string;
   }
 }
