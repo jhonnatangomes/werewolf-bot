@@ -1,4 +1,5 @@
-import { currentDeveloper, discordRequest, isProduction } from './utils';
+import { currentDeveloper, isProduction } from '../utils';
+import { discordRequest } from './common';
 
 export async function hasGuildCommands(appId: string, guildId: string, commands: Command[]): Promise<void> {
   if (guildId === '' || appId === '') return;
@@ -58,9 +59,14 @@ type Command = {
   type: ApplicationCommandType;
   options?: ApplicationCommandOption[];
 };
-export const TEST_COMMAND = {
+export const TEST_COMMAND: Command = {
   name: 'my-bot-test',
   description: 'Basic guild command',
+  type: ApplicationCommandType.ChatInput,
+};
+export const START_COMMAND: Command = {
+  name: 'start-werewolf',
+  description: 'Displays a panel to trigger game start',
   type: ApplicationCommandType.ChatInput,
 };
 export function command(command: Command): Command {
